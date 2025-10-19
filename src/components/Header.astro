@@ -1,0 +1,64 @@
+---
+import MenuDropNav from './ui/MenuDropNav.astro'
+
+const links = [
+  {
+    name: 'Acerca de Nosotros',
+    url: '/about-us',
+  },
+  {
+    name: 'Galeria',
+    url: '/galery',
+  },
+  {
+    name: 'Contactanos',
+    url: '/contact',
+  },
+]
+---
+
+<header class="fixed top-0 left-0 right-0 z-50 bg-white px-4 py-6 mb-8">
+  <div class="max-w-7xl mx-auto flex items-center justify-between">
+    <div>
+      <img src="" alt="don-emiliano-logo" />
+    </div>
+
+    <nav class="hidden md:block">
+      <ul class="inline-flex items-center gap-x-5 font-bold text-xl">
+        <li>
+          <MenuDropNav
+            title="Inicio"
+            items={[
+              { name: 'Home', url: '/' },
+              { name: 'Menu', url: '/menu' },
+              { name: 'Content', url: '/content' },
+            ]}
+          />
+        </li>
+        <li>
+          <MenuDropNav
+            title="Paginas"
+            items={[{ name: 'Nuestra Historia', url: '/our-history' }]}
+          />
+        </li>
+        {
+          links.map(({ name, url }) => (
+            <li>
+              <a href={url} class="block transition hover:text-amber-400">
+                {name}
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a
+            href="'/make-your-book"
+            class="px-6 py-4 bg-amber-400 rounded-md hover:bg-amber-400/80"
+          >
+            Reserva
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</header>

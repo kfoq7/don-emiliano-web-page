@@ -1,0 +1,60 @@
+---
+// src/components/DropdownMenu.astro
+export interface Props {
+  title: string
+  items: { name: string; url: string }[]
+}
+
+const { title, items } = Astro.props
+
+const menuId = title.toLowerCase().replace(/\s+/g, '-')
+---
+
+<div class="relative inline-block">
+  <button
+    id={`menu-toggle-${menuId}`}
+    class="menu-drop-toggle rounded-md border-2 border-transparent px-2 py-1 font-bold tracking-tight transition hover:border-gray-400 focus:border-gray-400 focus:outline-none"
+  >
+    {title}
+  </button>
+
+  <nav
+    id={`menu-nav-${menuId}`}
+    class="hidden absolute left-0 mt-2 w-max origin-top-left data-[open]:block"
+  >
+    <div class="rounded-md border-2 border-gray-400 bg-white px-1.5 py-1 shadow-lg">
+      <ul class="space-y-1 text-base font-normal">
+        {
+          items.map(({ name, url }) => (
+            <li>
+              <a href={url} class="block rounded-sm px-2 py-0.5 transition hover:bg-gray-100">
+                {name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </nav>
+</div>
+
+<script is:inline define:vars={{ menuId }}>
+  const toggleButton = document.getElementById(`menu-toggle-${menuId}`)
+  const menuNav = document.getElementById(`menu-nav-${menuId}`)
+
+  if (toggleButton && menuNav) {
+    toggleButton.addEventListener('click', event => {
+      event.stopPropagation()
+
+      const isOpen = menuNav.hasAttribute('data-open')
+      isOpen ? menuNav.removeAttribute('data-open') : menuNav.setAttribute('data-open', '')
+    })
+  }
+
+  // Optional: Add a listener to close the menu when clicking outside
+  // document.addEventListener('click', () => {
+  //   if (menuNav && menuNav.hasAttribute('data-open')) {
+  //     menuNav.removeAttribute('data-open')
+  //   }
+  // })
+</script>

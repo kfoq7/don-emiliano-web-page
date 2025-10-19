@@ -1,0 +1,49 @@
+---
+import ArrowDown from '@/components/icons/ArrowDown.astro'
+
+export interface Props {
+  title: string
+  items: { name: string; url: string }[]
+  thumbrnail?: string
+}
+
+const { title, items, thumbrnail } = Astro.props
+---
+
+<div class="relative inline-block group">
+  {
+    thumbrnail && (
+      <div class="px-1">
+        <img src={thumbrnail} />
+      </div>
+    )
+  }
+
+  <div
+    class="flex items-center gap-x-2 rounded-md px-2 py-1 font-bold tracking-tight transition group-hover:border-gray-400 focus:border-gray-400 focus:outline-none cursor-pointer hover:text-amber-400"
+  >
+    {title}
+    <ArrowDown />
+  </div>
+
+  <nav
+    class="hidden absolute left-0 origin-top-left group-hover:block group-focus-within:block top-full pt-2 w-48"
+  >
+    <div class="bg-white px-6 py-1 shadow-lg">
+      <ul class="divide-y divide-gray-400/70 text-lg font-bold tracking-tighter">
+        {
+          items.map(({ name, url }) => (
+            <li>
+              <a
+                href={url}
+                class="block rounded-sm py-3.5 transition hover:text-amber-400 text-left"
+              >
+                {name}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </nav>
+</div>
