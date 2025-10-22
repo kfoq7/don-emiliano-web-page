@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Papaya",
+    "description": "Jugo de Papaya",
+    "price": 11
+  },
+  {
+    "id": 2,
+    "name": "Fresa con Leche",
+    "description": "Jugo de Fresa con Leche",
+    "price": 16
+  },
+  {
+    "id": 3,
+    "name": "Pina",
+    "description": "Jugo de Piña",
+    "price": 11
+  }
+]

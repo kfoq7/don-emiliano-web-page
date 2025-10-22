@@ -1,15 +1,8 @@
 ---
 import MenuDropNav from './ui/MenuDropNav.astro'
+// import WhatsappIcon from '@/components/icons/WhatsappIcon.astro'
 
 const links = [
-  {
-    name: 'Acerca de Nosotros',
-    url: '/about-us',
-  },
-  {
-    name: 'Galeria',
-    url: '/galery',
-  },
   {
     name: 'Contactanos',
     url: '/contact',
@@ -18,12 +11,12 @@ const links = [
 ---
 
 <header class="fixed top-0 left-0 right-0 z-50 bg-white px-4 py-6 mb-8">
-  <div class="max-w-7xl mx-auto flex items-center justify-between">
-    <div>
-      <img src="" alt="don-emiliano-logo" />
-    </div>
+  <div class="max-w-7xl mx-auto flex items-center justify-between" aria-label="Content Navigartor">
+    <a href="/" class="flex items-center">
+      <img src="" alt="Don Emiliano Logo" class="h-10 w-auto" />
+    </a>
 
-    <nav class="hidden md:block">
+    <nav class="hidden md:block" arial-label="Main Navigation">
       <ul class="inline-flex items-center gap-x-5 font-bold text-xl">
         <li>
           <MenuDropNav
@@ -38,7 +31,11 @@ const links = [
         <li>
           <MenuDropNav
             title="Paginas"
-            items={[{ name: 'Nuestra Historia', url: '/our-history' }]}
+            items={[
+              { name: 'Acerca de Nostros', url: '/about-us' },
+              { name: 'Nuestra Historia', url: '/our-history' },
+              { name: 'Galeria', url: '/gallery' },
+            ]}
           />
         </li>
         {
@@ -50,10 +47,22 @@ const links = [
             </li>
           ))
         }
+        <!-- <li> -->
+        <!--   <a -->
+        <!--     href="/order-now" -->
+        <!--     class="inline-flex items-center gap-x-2 rounded-md px-3 font-medium transition hover:text-green-700" -->
+        <!--   > -->
+        <!--     <WhatsappIcon class="h-5 w-5" /> -->
+        <!--     <div class="text-sm font-extrabold tracking-tighter"> -->
+        <!--       Pide Por -->
+        <!--       <span class="block text-green-600">Whatsapp</span> -->
+        <!--     </div> -->
+        <!--   </a> -->
+        <!-- </li> -->
         <li>
           <a
             href="'/make-your-book"
-            class="px-6 py-4 bg-amber-400 rounded-md hover:bg-amber-400/80"
+            class="px-6 py-2 bg-amber-400 text-center rounded-md hover:bg-amber-400/80"
           >
             Reserva
           </a>
