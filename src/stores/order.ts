@@ -1,7 +1,15 @@
-import { map } from 'nanostores'
+import { persistentMap } from '@nanostores/persistent'
 import { type Product } from '@/types/Product'
 
-export const productItems = map<Record<string, Product & { quantity: number }>>({})
+export const productItems = persistentMap<Record<string, Product & { quantity: number }>>(
+  'productItems',
+  {},
+  {
+    encode: JSON.stringify,
+    decode: JSON.parse,
+    listen: true,
+  },
+)
 
 export function addProductItem(item: Product) {
   const itemId = `${item.id}`
@@ -13,6 +21,17 @@ export function addProductItem(item: Product) {
     })
   } else {
     productItems.setKey(itemId, { ...item, quantity: 1 })
+  }
+}
+
+export function increaseProductItem(id: number) {
+  const itemId = `${id}`
+  const existingEntry = productItems.get()[itemId]
+  if (existingEntry) {
+    productItems.setKey(itemId, {
+      ...existingEntry,
+      quantity: existingEntry.quantity + 1,
+    })
   }
 }
 
@@ -34,4 +53,9 @@ export function decreaseProductItem(id: number) {
 export function removeProductItem(id: number) {
   const itemId = `${id}`
   productItems.setKey(itemId, undefined)
+}
+
+export function getProductItemsTotal(): number {
+  const items = productItems.get()
+  return Object.values(items).reduce((total, item) => total + item.price * item.quantity, 0)
 }

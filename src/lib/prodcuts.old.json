@@ -1,0 +1,67 @@
+{
+  "porciones": [
+    {
+      "nombre": "PORCIÓN DE RELLENO",
+      "descripcion": "Acompañado con camote y sarsa criolla",
+      "precio": "S/.16.00"
+    },
+    {
+      "nombre": "PORCIÓN DE CAMOTE",
+      "precio": "S/8.00"
+    },
+    {
+      "nombre": "PORCIÓN DE SARSA CRIOLLA",
+      "precio": "S/.5.00"
+    },
+    {
+      "nombre": "PAN UNIDAD",
+      "precio": "S/.2.00"
+    }
+  ],
+  "jugos": [
+    {
+      "nombre": "FRESA CON LECHE",
+      "precio": "S/.16.00"
+    },
+    {
+      "nombre": "ESPECIAL",
+      "precio": "S/.13.00"
+    },
+    {
+      "nombre": "SURTIDO",
+      "precio": "S/.11.00"
+    },
+    {
+      "nombre": "PAPAYA",
+      "precio": "S/.11.00"
+    },
+    {
+      "nombre": "PINA",
+      "precio": "S/.11.00"
+    },
+    {
+      "nombre": "LIMONADA CON HIERBABUENA",
+      "precio": "S/.11.00"
+    }
+  ],
+  "frappes": {
+    "tamaños": [
+      {
+        "nombre": "FRAPPE DE 12 ONZ",
+        "precio": "S/.12.00"
+      },
+      {
+        "nombre": "FRAPPE DE 16 ONZ",
+        "precio": "S/.16.00"
+      }
+    ],
+    "sabores": ["Cafe", "Moca", "Fresa", "Chocolate", "Menta", "Lucuma"]
+  },
+  "caldos": [
+    {
+      "nombre": "Patasca",
+      "precio": "S/.25.00",
+      "disponibilidad": "Domingo"
+    }
+  ]
+}
