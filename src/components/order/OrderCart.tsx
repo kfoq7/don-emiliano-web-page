@@ -7,19 +7,16 @@ import {
   decreaseProductItem,
   removeProductItem,
 } from '@/stores/order'
+import { useHydration } from '@/lib/hooks/hydration'
 
 export default function OrderCart() {
   const $products = useStore(productItems)
   const total = getProductItemsTotal()
-  const [hydrated, setHydrated] = useState(false)
-
-  useEffect(() => {
-    setHydrated(true)
-  }, [$products])
+  const { hydrated } = useHydration({ item: $products })
 
   if (!hydrated) {
     return (
-      <div className="flex items-center justify-center h-[480px]">
+      <div className="h-[480px] overflow-y-scroll flex items-center justify-center">
         <span className="text-gray-500">Cargando carrito...</span>
       </div>
     )
@@ -55,7 +52,7 @@ export default function OrderCart() {
                       -
                     </button>
                     <button
-                      className="px-2 py-1 rounded border"
+                      className="px-2 py-1 rounded border cursor-pointer"
                       onClick={() => removeProductItem(id)}
                     >
                       Remove
