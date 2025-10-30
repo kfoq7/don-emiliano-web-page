@@ -1,3 +1,4 @@
+import { useStore } from '@nanostores/preact'
 import { persistentMap } from '@nanostores/persistent'
 import { type Product } from '@/types/Product'
 
@@ -55,7 +56,12 @@ export function removeProductItem(id: number) {
   productItems.setKey(itemId, undefined)
 }
 
-export function getProductItemsTotal(): number {
-  const items = productItems.get()
+// export function getProductItemsTotal(): number {
+//   const items = productItems.get()
+//   return Object.values(items).reduce((total, item) => total + item.price * item.quantity, 0)
+// }
+
+export function useProductItemsTotal(): number {
+  const items = useStore(productItems)
   return Object.values(items).reduce((total, item) => total + item.price * item.quantity, 0)
 }
