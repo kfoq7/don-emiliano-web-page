@@ -1,0 +1,16 @@
+---
+import LayoutAdmin from '@/layouts/LayoutAdmin.astro'
+import { subaseAdmin } from '@/supabase-admin'
+import { isAdmin } from '@/utils/admin'
+
+if (!Astro.locals.user) {
+  return Astro.redirect('/404')
+}
+
+const userId = Astro.locals.user.id
+if (!isAdmin(userId)) {
+  return Astro.redirect('/404')
+}
+---
+
+<LayoutAdmin> Hello From Admin Panel </LayoutAdmin>

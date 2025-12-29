@@ -14,12 +14,12 @@ export default function Order() {
 
   return (
     <>
-      <div className="w-[125%] mt-4 mb-2">
-        <div className="flex space-x-2 overflow-x-auto">
+      <div className="max-w-3xl mt-4 mb-2">
+        <div className="flex flex-row gap-2 overflow-y-auto">
           {categories.map(category => (
             <button
               key={category}
-              className={`px-4 py-2 rounded cursor-pointer uppercase ${
+              className={`px-4 py-2 rounded cursor-pointer text-nowrap ${
                 selectedCategory === category
                   ? 'bg-amber-400 text-black font-semibold'
                   : 'bg-gray-200 text-gray-700'
