@@ -1,0 +1,10 @@
+[package]
+name = "attendance-reader"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+name = "attendance_reader"
+path = "src/lib.rs"
+
+[dependencies]
