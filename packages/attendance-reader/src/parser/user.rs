@@ -1,14 +1,15 @@
+use serde::{Deserialize, Serialize};
 use std::fs;
 use std::io;
 use std::path::Path;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct User {
     pub id: u32,
     pub name: String,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct UserData {
     pub users: Vec<User>,
 }
@@ -67,4 +68,14 @@ where
     }
 
     Ok(UserData { users })
+}
+
+pub fn export_users_to_json<P>(user_data: &UserData, output_path: P) -> io::Result<()>
+where
+    P: AsRef<Path>,
+{
+    let json = serde_json::to_string_pretty(user_data)
+        .map_err(|e| io::Error::new(io::ErrorKind::InvalidData, e))?;
+    fs::write(output_path, json)?;
+    Ok(())
 }
