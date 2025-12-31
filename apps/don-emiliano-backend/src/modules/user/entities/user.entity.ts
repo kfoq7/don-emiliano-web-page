@@ -11,16 +11,16 @@ export class User {
   @PrimaryGeneratedColumn('increment')
   id: string
 
-  @Column({ unique: true })
+  @Column({ type: 'text', unique: true })
   email: string
 
-  @Column()
+  @Column({ type: 'text' })
   password: string
 
-  @Column()
+  @Column({ type: 'text' })
   firstName: string
 
-  @Column()
+  @Column({ type: 'text' })
   lastName: string
 
   @Column({ default: true })

@@ -26,4 +26,5 @@ async function bootstrap() {
   await app.listen(PORT)
   console.log(`Application is running on: ${await app.getUrl()}`)
 }
+/* eslint-disable @typescript-eslint/no-floating-promises */
 bootstrap()
