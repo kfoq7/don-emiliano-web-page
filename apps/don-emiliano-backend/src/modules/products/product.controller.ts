@@ -4,7 +4,7 @@ import { CreateCategoryDto } from './dtos/create-category.dto'
 import { UpdateCategoryDto } from './dtos/update-category.dto'
 import { CreateProductDto } from './dtos/create-product.dto'
 
-@Controller('api/products')
+@Controller('products')
 export class ProductController {
   constructor(private readonly productService: ProductService) {}
 

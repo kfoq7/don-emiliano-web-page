@@ -14,6 +14,8 @@ async function bootstrap() {
     }),
   )
 
+  app.setGlobalPrefix('/api/v1')
+
   const config = new DocumentBuilder()
     .setTitle('Don Emiliano Backend')
     .setDescription('API Documentation for Don Emiliano Backend')
