@@ -16,11 +16,13 @@
     "@supabase/supabase-js": "^2.89.0",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.6",
+    "leaflet": "^1.9.4",
     "nanostores": "^1.1.0",
     "preact": "^10.28.0",
     "tailwindcss": "^4.1.18"
   },
   "devDependencies": {
+    "@types/leaflet": "^1.9.21",
     "prettier": "^3.7.4",
     "prettier-plugin-astro": "^0.14.1"
   }

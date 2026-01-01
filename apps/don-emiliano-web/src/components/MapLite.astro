@@ -1,0 +1,135 @@
+---
+interface Props {
+  lat?: number
+  lng?: number
+  name?: string
+  height?: string
+  zoom?: number
+}
+
+const { lat = -34.397, lng = 150.644, name = 'location', height = '400px', zoom = 13 } = Astro.props
+
+const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
+---
+
+<div class="map-picker-container" data-unique-id={uniqueId}>
+  <div
+    class="map-wrapper rounded-lg overflow-hidden border"
+    style={`width: 100%; height: ${height};`}
+  >
+  </div>
+  <input type="hidden" name={`${name}-latitude`} class="lat-input" value={lat} />
+  <input type="hidden" name={`${name}-longitude`} class="lng-input" value={lng} />
+  <p class="mt-2 text-sm text-gray-600">
+    Lat:
+    <span class="lat-display">{lat.toFixed(6)}</span>, Lng: <span class="lng-display">
+      {lng.toFixed(6)}
+    </span>
+  </p>
+</div>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+<script>
+  import L from 'leaflet'
+
+  // Fix Leaflet default icon issue
+  const fixLeafletIcons = () => {
+    delete (L.Icon.Default.prototype as any)._getIconUrl
+    L.Icon.Default.mergeOptions({
+      iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+      iconRetinaUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png',
+      shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    })
+  }
+
+  const initializeMap = (container: Element) => {
+    const wrapper = container.querySelector('.map-wrapper') as HTMLElement
+    if (!wrapper) return
+
+    const lat = parseFloat(container.getAttribute('data-lat') || '-34.397')
+    const lng = parseFloat(container.getAttribute('data-lng') || '150.644')
+    const zoom = parseInt(container.getAttribute('data-zoom') || '13')
+
+    // Initialize map
+    const map = L.map(wrapper).setView([lat, lng], zoom)
+
+    // Add tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      maxZoom: 19,
+    }).addTo(map)
+
+    // Add initial marker if coordinates are not default
+    let marker: L.Marker | null = null
+    if (lat !== -34.397 || lng !== 150.644) {
+      marker = L.marker([lat, lng]).addTo(map)
+    }
+
+    // Get form inputs and displays
+    const latInput = container.querySelector('.lat-input') as HTMLInputElement
+    const lngInput = container.querySelector('.lng-input') as HTMLInputElement
+    const latDisplay = container.querySelector('.lat-display')
+    const lngDisplay = container.querySelector('.lng-display')
+
+    // Handle map clicks
+    map.on('click', (e: L.LeafletMouseEvent) => {
+      const newLat = e.latlng.lat
+      const newLng = e.latlng.lng
+
+      // Update or create marker
+      if (marker) {
+        marker.setLatLng(e.latlng)
+      } else {
+        marker = L.marker(e.latlng).addTo(map)
+      }
+
+      // Update hidden inputs
+      if (latInput) latInput.value = newLat.toString()
+      if (lngInput) lngInput.value = newLng.toString()
+
+      // Update display
+      if (latDisplay) latDisplay.textContent = newLat.toFixed(6)
+      if (lngDisplay) lngDisplay.textContent = newLng.toFixed(6)
+
+      // Dispatch custom event for external listeners
+      container.dispatchEvent(
+        new CustomEvent('location-change', {
+          detail: { latitude: newLat, longitude: newLng },
+          bubbles: true,
+        }),
+      )
+    })
+
+    // Store map instance on container for external access
+    ;(container as any).__leafletMap = map
+  }
+
+  // Initialize on load and for dynamic content
+  const initialize = () => {
+    fixLeafletIcons()
+    document.querySelectorAll('.map-picker-container').forEach(container => {
+      if (!(container as any).__leafletMap) {
+        initializeMap(container)
+      }
+    })
+  }
+
+  // Run on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initialize)
+  } else {
+    initialize()
+  }
+</script>
+
+<script define:vars={{ lat, lng, zoom, uniqueId }}>
+  // Set data attributes for this specific instance
+  const container = document.querySelector(`[data-unique-id="${uniqueId}"]`)
+  if (container) {
+    container.setAttribute('data-lat', lat.toString())
+    container.setAttribute('data-lng', lng.toString())
+    container.setAttribute('data-zoom', zoom.toString())
+  }
+</script>
