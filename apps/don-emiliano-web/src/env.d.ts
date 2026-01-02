@@ -1,10 +1,9 @@
 /// <reference types="astro/client" />
 
-import type { User } from '@supabase/supabase-js'
+import type { User } from '@/types/User'
 
 interface ImportMetaEnv {
-  readonly SUPABASE_URL: string
-  readonly SUPABASE_ANON_KEY: string
+  readonly PUBLIC_API_URL: string
 }
 
 interface ImportMeta {
