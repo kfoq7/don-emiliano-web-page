@@ -7,14 +7,20 @@ interface Props {
   zoom?: number
 }
 
-const { lat = -34.397, lng = 150.644, name = 'location', height = '400px', zoom = 13 } = Astro.props
+const {
+  lat = -11.95118,
+  lng = -77.0509283,
+  name = 'location',
+  height = '500px',
+  zoom = 17,
+} = Astro.props
 
 const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
 ---
 
-<div class="map-picker-container" data-unique-id={uniqueId}>
+<div id="map-picker" class="px-8 flex flex-col items-center" data-unique-id={uniqueId}>
   <div
-    class="map-wrapper rounded-lg overflow-hidden border"
+    class="map-wrapper rounded-lg overflow-hidden border mx-5"
     style={`width: 100%; height: ${height};`}
   >
   </div>
@@ -28,10 +34,23 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
   </p>
 </div>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<!-- Leaflet CSS -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+  integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+  crossorigin=""
+/>
+
+<!-- Leaflet JS -->
+<script
+  is:inline
+  src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+  integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+  crossorigin=""></script>
 
 <script>
-  import L from 'leaflet'
+  const L = window.L
 
   // Fix Leaflet default icon issue
   const fixLeafletIcons = () => {
@@ -53,6 +72,9 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
 
     // Initialize map
     const map = L.map(wrapper).setView([lat, lng], zoom)
+
+    // remove leaflet attribution
+    map.attributionControl.setPrefix('')
 
     // Add tile layer
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -93,7 +115,6 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
       if (latDisplay) latDisplay.textContent = newLat.toFixed(6)
       if (lngDisplay) lngDisplay.textContent = newLng.toFixed(6)
 
-      // Dispatch custom event for external listeners
       container.dispatchEvent(
         new CustomEvent('location-change', {
           detail: { latitude: newLat, longitude: newLng },
@@ -109,11 +130,13 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
   // Initialize on load and for dynamic content
   const initialize = () => {
     fixLeafletIcons()
-    document.querySelectorAll('.map-picker-container').forEach(container => {
-      if (!(container as any).__leafletMap) {
-        initializeMap(container)
-      }
-    })
+    const mapContainer = document.querySelector('#map-picker') // document.querySelectorAll('map-picker').forEach(container => {
+    if (!mapContainer) return
+    initializeMap(mapContainer)
+    //   if (!(container as any).__leafletMap) {
+    //     initializeMap(container)
+    //   }
+    // })
   }
 
   // Run on DOM ready
@@ -122,6 +145,10 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
   } else {
     initialize()
   }
+  //
+  // document.addEventListener('astro:page-load', () => {
+  //   initialize()
+  // })
 </script>
 
 <script define:vars={{ lat, lng, zoom, uniqueId }}>

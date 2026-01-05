@@ -11,6 +11,9 @@ import preact from '@astrojs/preact'
 export default defineConfig({
   integrations: [preact()],
   output: 'server',
+  server: {
+    host: true,
+  },
   vite: {
     plugins: [tailwindcss()],
     // resolve: {
