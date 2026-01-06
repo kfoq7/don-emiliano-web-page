@@ -7,6 +7,7 @@ interface Props {
   zoom?: number
 }
 
+// Setting by default the current restaurant
 const {
   lat = -11.95118,
   lng = -77.0509283,
@@ -18,20 +19,37 @@ const {
 const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
 ---
 
-<div id="map-picker" class="px-8 flex flex-col items-center" data-unique-id={uniqueId}>
+<div id="map-container" class="px-8 flex flex-col items-center" data-unique-id={uniqueId}>
   <div
+    id="map-picker"
     class="map-wrapper rounded-lg overflow-hidden border mx-5"
+    aria-label="Interactive map to get the user location"
     style={`width: 100%; height: ${height};`}
   >
   </div>
-  <input type="hidden" name={`${name}-latitude`} class="lat-input" value={lat} />
-  <input type="hidden" name={`${name}-longitude`} class="lng-input" value={lng} />
-  <p class="mt-2 text-sm text-gray-600">
-    Lat:
-    <span class="lat-display">{lat.toFixed(6)}</span>, Lng: <span class="lng-display">
-      {lng.toFixed(6)}
-    </span>
-  </p>
+  <input aria-hidden="true" type="hidden" name={`${name}-lat`} class="lat-input" value={lat} />
+  <input aria-hidden="true" type="hidden" name={`${name}-lng`} class="lng-input" value={lng} />
+
+  <div class="mt-4 mx-6 gap-2 flex flex-col md:flex-none items-center">
+    <input
+      aria-label="Get address"
+      type="text"
+      class="px-1.5 py-0.5 border-2 border-gray-300 rounded-lg"
+    />
+
+    <input
+      aria-label="Get the user specific number"
+      type="text"
+      class="px-1.5 py-0.5 border-2 border-gray-300 rounded-lg"
+    />
+
+    <p class="mt-2 text-sm text-gray-600">
+      Lat:
+      <span class="lat-display">{lat.toFixed(6)}</span>, Lng: <span class="lng-display">
+        {lng.toFixed(6)}
+      </span>
+    </p>
+  </div>
 </div>
 
 <!-- Leaflet CSS -->
@@ -50,6 +68,8 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
   crossorigin=""></script>
 
 <script>
+  import { location } from '@/stores/location'
+
   const L = window.L
 
   // Fix Leaflet default icon issue
@@ -63,7 +83,7 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
   }
 
   const initializeMap = (container: Element) => {
-    const wrapper = container.querySelector('.map-wrapper') as HTMLElement
+    const wrapper = container.querySelector('#map-picker') as HTMLElement
     if (!wrapper) return
 
     const lat = parseFloat(container.getAttribute('data-lat') || '-34.397')
@@ -71,72 +91,90 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
     const zoom = parseInt(container.getAttribute('data-zoom') || '13')
 
     // Initialize map
-    const map = L.map(wrapper).setView([lat, lng], zoom)
+    try {
+      const map = L.map(wrapper).setView([lat, lng], zoom)
 
-    // remove leaflet attribution
-    map.attributionControl.setPrefix('')
+      // Remove leaflet attribution
+      map.attributionControl.setPrefix('')
 
-    // Add tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution:
-        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      maxZoom: 19,
-    }).addTo(map)
+      // Add tile layer
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        maxZoom: 19,
+      }).addTo(map)
 
-    // Add initial marker if coordinates are not default
-    let marker: L.Marker | null = null
-    if (lat !== -34.397 || lng !== 150.644) {
+      const restaurantIcon = L.divIcon({
+        html: `
+          <svg xmlns="http://www.w3.org/2000/svg" height="28px" viewBox="0 -960 960 960" width="28px" fill="orange"><path d="M841-518v318q0 33-23.5 56.5T761-120H201q-33 0-56.5-23.5T121-200v-318q-23-21-35.5-54t-.5-72l42-136q8-26 28.5-43t47.5-17h556q27 0 47 16.5t29 43.5l42 136q12 39-.5 71T841-518Zm-272-42q27 0 41-18.5t11-41.5l-22-140h-78v148q0 21 14 36.5t34 15.5Zm-180 0q23 0 37.5-15.5T441-612v-148h-78l-22 140q-4 24 10.5 42t37.5 18Zm-178 0q18 0 31.5-13t16.5-33l22-154h-78l-40 134q-6 20 6.5 43t41.5 23Zm540 0q29 0 42-23t6-43l-42-134h-76l22 154q3 20 16.5 33t31.5 13ZM201-200h560v-282q-5 2-6.5 2H751q-27 0-47.5-9T663-518q-18 18-41 28t-49 10q-27 0-50.5-10T481-518q-17 18-39.5 28T393-480q-29 0-52.5-10T299-518q-21 21-41.5 29.5T211-480h-4.5q-2.5 0-5.5-2v282Zm560 0H201h560Z"/></svg>`,
+        iconSize: [28, 28],
+        iconAnchor: [12, 12],
+        className: 'restaurant-icon-marker',
+      })
+
+      L.marker([lat, lng], { icon: restaurantIcon }).addTo(map)
+      // .bindPopup(
+      //   '<div style="text-align: center; padding: 8px;"><strong style="color: #f8b134;">📍 Tu ubicación</strong></div>',
+      //   { className: 'user-popup' },
+      // )
+
+      // Add initial marker if coordinates are not default
+      let marker: L.Marker | null = null
       marker = L.marker([lat, lng]).addTo(map)
+
+      // Get form inputs and displays
+      const latInput = container.querySelector('.lat-input') as HTMLInputElement
+      const lngInput = container.querySelector('.lng-input') as HTMLInputElement
+      const latDisplay = container.querySelector('.lat-display')
+      const lngDisplay = container.querySelector('.lng-display')
+
+      // Handle map clicks
+      map.on('click', (e: L.LeafletMouseEvent) => {
+        const newLat = e.latlng.lat
+        const newLng = e.latlng.lng
+
+        // Update or create marker
+        if (marker) {
+          marker.setLatLng(e.latlng)
+        } else {
+          marker = L.marker(e.latlng).addTo(map)
+        }
+
+        // Update hidden inputs
+        if (latInput) latInput.value = newLat.toString()
+        if (lngInput) lngInput.value = newLng.toString()
+
+        const latFixed = newLat.toFixed(6)
+        const lngFixed = newLng.toFixed(6)
+
+        // Update display ONLY DEVOPLMENT MODE
+        if (latDisplay) latDisplay.textContent = latFixed
+        if (lngDisplay) lngDisplay.textContent = lngFixed
+
+        // Update local state coord
+        location.set({ lat: latFixed, lng: lngFixed })
+
+        container.dispatchEvent(
+          new CustomEvent('location-change', {
+            detail: { latitude: newLat, longitude: newLng },
+            bubbles: true,
+          }),
+        )
+      })
+
+      // Store map instance on container for external access
+      ;(container as any).__leafletMap = map
+    } catch (error) {
+      console.log('Initialize map error.')
     }
-
-    // Get form inputs and displays
-    const latInput = container.querySelector('.lat-input') as HTMLInputElement
-    const lngInput = container.querySelector('.lng-input') as HTMLInputElement
-    const latDisplay = container.querySelector('.lat-display')
-    const lngDisplay = container.querySelector('.lng-display')
-
-    // Handle map clicks
-    map.on('click', (e: L.LeafletMouseEvent) => {
-      const newLat = e.latlng.lat
-      const newLng = e.latlng.lng
-
-      // Update or create marker
-      if (marker) {
-        marker.setLatLng(e.latlng)
-      } else {
-        marker = L.marker(e.latlng).addTo(map)
-      }
-
-      // Update hidden inputs
-      if (latInput) latInput.value = newLat.toString()
-      if (lngInput) lngInput.value = newLng.toString()
-
-      // Update display
-      if (latDisplay) latDisplay.textContent = newLat.toFixed(6)
-      if (lngDisplay) lngDisplay.textContent = newLng.toFixed(6)
-
-      container.dispatchEvent(
-        new CustomEvent('location-change', {
-          detail: { latitude: newLat, longitude: newLng },
-          bubbles: true,
-        }),
-      )
-    })
-
-    // Store map instance on container for external access
-    ;(container as any).__leafletMap = map
   }
 
   // Initialize on load and for dynamic content
   const initialize = () => {
     fixLeafletIcons()
-    const mapContainer = document.querySelector('#map-picker') // document.querySelectorAll('map-picker').forEach(container => {
+    const mapContainer = document.querySelector('#map-container')
     if (!mapContainer) return
     initializeMap(mapContainer)
-    //   if (!(container as any).__leafletMap) {
-    //     initializeMap(container)
-    //   }
-    // })
   }
 
   // Run on DOM ready
@@ -147,11 +185,14 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
   }
   //
   // document.addEventListener('astro:page-load', () => {
+  //   const $map = document.querySelector('#map-picker') as HTMLDivElement | null
+  //   if (!$map) return
+  //
   //   initialize()
   // })
 </script>
 
-<script define:vars={{ lat, lng, zoom, uniqueId }}>
+<script is:inline define:vars={{ lat, lng, zoom, uniqueId }}>
   // Set data attributes for this specific instance
   const container = document.querySelector(`[data-unique-id="${uniqueId}"]`)
   if (container) {
