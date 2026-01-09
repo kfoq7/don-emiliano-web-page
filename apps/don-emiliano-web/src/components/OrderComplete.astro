@@ -1,0 +1,40 @@
+<section class="pt-28">
+  <div class="mt-4 mx-6 gap-2 flex flex-col md:flex-none items-center">
+    <label for="address" class="text-sm font-medium">
+      Dirección de entrega
+      <input
+        id="address"
+        aria-label="Get address"
+        type="text"
+        class="px-1.5 py-0.5 border-2 border-gray-300 rounded-lg w-156 mt-1"
+      />
+    </label>
+
+    <label for="phone" class="text-sm font-medium">
+      Número exacto de domicilio
+      <input
+        id="phone"
+        aria-label="Get the user specific number"
+        type="text"
+        class="px-1.5 py-0.5 border-2 border-gray-300 rounded-lg w-156 mt-1"
+      />
+    </label>
+
+    <a id="location" class="text-sm text-gray-600">Menu</a>
+  </div>
+</section>
+
+<script>
+  import { location } from '@/stores/location'
+
+  const locationDiv = document.getElementById('location') as HTMLAnchorElement
+  const value = location.get()
+  console.log(value)
+
+  if (locationDiv && value && value.lat && value.lng) {
+    // locationDiv.textContent = `Ubicación: ${value.lat}, ${value.lng}`
+
+    locationDiv.href = `https://www.google.com/maps?q=${value.lat},${value.lng}&hl=es`
+    locationDiv.target = '_blank'
+  }
+</script>

@@ -31,11 +31,12 @@ export default function Order() {
           ))}
         </div>
       </div>
-      <div class="h-[480px] overflow-y-auto">
+
+      <div class="h-120 overflow-y-auto">
         <div className="mt-2">
           <div className="space-y-3">
             {filteredProducts.map(product => (
-              <ProductCard key={product.id} {...product} />
+              <ProductCard key={product.id} product={product} />
             ))}
           </div>
         </div>

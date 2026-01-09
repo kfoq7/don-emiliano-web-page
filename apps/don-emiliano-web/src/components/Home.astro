@@ -4,17 +4,42 @@
   </div>
   <div class="mt-4 py-6 flex flex-col items-center gap-5 md:flex-row">
     <div class="flex items-center justify-center gap-3 text-lg">
-      <div class="">Recojo en tienda</div>
+      <button id="pickup-store" class="">Recojo en tienda</button>
       <div aria-hidden="true" class="w-0.5 h-6 bg-gray-500"></div>
-      <div>Para llevar</div>
+      <button id="delivery">Delivery</button>
     </div>
     <div>
       <a
-        href="/menu"
+        href="/make-your-orden"
         class="inline-block bg-amber-500 px-8 py-3 rounded-md text-white font-bold tracking-wide"
       >
-        Menú
+        Ordernar
       </a>
     </div>
   </div>
 </section>
+
+<script>
+  import { delivery } from '@/stores/location'
+
+  const $pickupStore = document.getElementById('pickup-store')
+  const $delivery = document.getElementById('delivery')
+
+  if ($pickupStore) {
+    $pickupStore.addEventListener('click', () => {
+      delivery.set(false)
+      redirectToOrder()
+    })
+  }
+
+  if ($delivery) {
+    $delivery.addEventListener('click', () => {
+      delivery.set(true)
+      redirectToOrder()
+    })
+  }
+
+  function redirectToOrder() {
+    window.location.href = '/make-your-orden'
+  }
+</script>

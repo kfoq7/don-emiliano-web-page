@@ -19,11 +19,14 @@ const data = (await response.json()) as Product[]
 ---
 
 <LayoutAdmin>
-  {
-    data.map(({ id, name, description, price }) => (
-      <div>
-        {id} {name} {description} {price}
-      </div>
-    ))
-  }
+  <h1>Bienvinido de nuevo {}</h1>
+  <div>
+    {
+      data.map(({ id, name, description, price }) => (
+        <div>
+          {id} {name} {description} {price}
+        </div>
+      ))
+    }
+  </div>
 </LayoutAdmin>
