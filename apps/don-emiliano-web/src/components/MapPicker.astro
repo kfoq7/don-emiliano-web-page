@@ -22,11 +22,12 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
 <div id="map-container" class="px-8 flex flex-col items-center" data-unique-id={uniqueId}>
   <div
     id="map-picker"
-    class="map-wrapper rounded-lg overflow-hidden border mx-5"
+    class="map-wrapper rounded-lg overflow-hidden border mx-5 z-9"
     aria-label="Interactive map to get the user location"
     style={`width: 100%; height: ${height};`}
   >
   </div>
+
   <input aria-hidden="true" type="hidden" name={`${name}-lat`} class="lat-input" value={lat} />
   <input aria-hidden="true" type="hidden" name={`${name}-lng`} class="lng-input" value={lng} />
 
@@ -44,8 +45,8 @@ const uniqueId = `map-${Math.random().toString(36).slice(2, 9)}`
     />
 
     <p class="mt-2 text-sm text-gray-600">
-      Lat:
-      <span class="lat-display">{lat.toFixed(6)}</span>, Lng: <span class="lng-display">
+      Lat: <span class="lat-display">{lat.toFixed(6)}</span>
+      , Lng: <span class="lng-display">
         {lng.toFixed(6)}
       </span>
     </p>
