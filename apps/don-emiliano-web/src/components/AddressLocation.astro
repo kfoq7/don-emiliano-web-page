@@ -79,6 +79,7 @@ import MapPicker from './MapPicker.astro'
               const lat = parseFloat(resultItem.dataset.lat || '0')
               const lng = parseFloat(resultItem.dataset.lon || '0')
 
+              console.log('selectd', { lat, lng })
               // Update the store with selected location
               location.set({
                 lat,
