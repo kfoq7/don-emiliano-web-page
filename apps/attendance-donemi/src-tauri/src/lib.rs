@@ -9,10 +9,28 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
+fn read_hex_bytes(path: String) -> Result<String, String> {
+    let file_path = Path::new(&path);
+    let bytes = fs::read(file_path).map_err(|e| format!("Failed to read file {}", 3))?;
+
+    let hex = bytes
+        .iter()
+        .map(|b| format!("{:02x}", b))
+        .collect::<Vec<_>>()
+        .join(" ");
+
+    Ok(hex)
+}
+
+fn get_users_from_hex(hex: String) -> Result<String, String> {
+    let bytes: Vec<u8> = hex
+        .split_whitespace()
+        .map(|s| u8::from_str_radix(s, 16).unwrap())
+        .collect();
+}
+
 #[tauri::command]
 fn read_file_in(path: String) -> Result<String, String> {
-    use serde_json::json;
-
     let file_path = Path::new(&path);
     let bytes = fs::read(file_path).map_err(|e| format!("failed to read file: {}", e))?;
 
